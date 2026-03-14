@@ -1,0 +1,117 @@
+# ╔══════════════════════════════════════════════════════════════╗
+# ║          File Organizer Bot — organizer.yml                  ║
+# ║  Define your watch folder, destination, and sorting rules.   ║
+# ╚══════════════════════════════════════════════════════════════╝
+
+# ── Watch settings ────────────────────────────────────────────────────────────
+
+# Folder to watch for new/modified files.
+# Use "." for the current directory, or an absolute path.
+watch_folder: "~/Downloads"
+
+# How long (seconds) to wait after a file event before acting.
+# Prevents moving files that are still being written.
+settle_delay: 2
+
+# If true, also watches subfolders inside watch_folder.
+recursive: false
+
+# ── Conflict resolution ───────────────────────────────────────────────────────
+
+# What to do if a file with the same name already exists at the destination.
+# Options: "rename"  → append _1, _2, etc.
+#          "skip"    → leave the file in place
+#          "replace" → overwrite the existing file
+on_conflict: "rename"
+
+# ── Logging ───────────────────────────────────────────────────────────────────
+
+# Write a log of every action to this file (relative to this config file).
+# Set to null to disable file logging.
+log_file: "organizer.log"
+
+# ── Rules ─────────────────────────────────────────────────────────────────────
+# Each rule is checked in order. The FIRST matching rule wins.
+#
+# A rule must have:
+#   - destination : folder to move the file into (absolute or relative to watch_folder)
+#
+# A rule may match on any combination of:
+#   - extensions  : list of file extensions  (e.g. [".pdf", ".docx"])
+#   - name_contains: substring in the filename (case-insensitive)
+#   - name_regex  : Python regex matched against the full filename
+#   - min_size_kb : file must be >= this many kilobytes
+#   - max_size_kb : file must be <= this many kilobytes
+#   - older_than_days : file's modified time must be older than N days
+#
+# Special destination tokens:
+#   {year}   → 4-digit year of the file's modified date
+#   {month}  → 2-digit month (01-12)
+#   {ext}    → extension without the dot  (e.g. "pdf")
+
+rules:
+
+  # ── Images ──────────────────────────────────────────────────
+  - name: "Images"
+    extensions: [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".svg", ".heic", ".tiff"]
+    destination: "~/Pictures/Organized/{year}/{month}"
+
+  # ── Videos ──────────────────────────────────────────────────
+  - name: "Videos"
+    extensions: [".mp4", ".mkv", ".avi", ".mov", ".wmv", ".flv", ".webm", ".m4v"]
+    destination: "~/Videos/Organized"
+
+  # ── Audio ────────────────────────────────────────────────────
+  - name: "Audio"
+    extensions: [".mp3", ".wav", ".flac", ".aac", ".ogg", ".m4a", ".wma"]
+    destination: "~/Music/Organized"
+
+  # ── Documents ────────────────────────────────────────────────
+  - name: "PDFs"
+    extensions: [".pdf"]
+    destination: "~/Documents/PDFs"
+
+  - name: "Word & Spreadsheets"
+    extensions: [".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".odt", ".ods"]
+    destination: "~/Documents/Office"
+
+  - name: "Text files"
+    extensions: [".txt", ".md", ".rst", ".csv", ".log"]
+    destination: "~/Documents/Text"
+
+  # ── Archives ─────────────────────────────────────────────────
+  - name: "Archives"
+    extensions: [".zip", ".tar", ".gz", ".bz2", ".xz", ".7z", ".rar"]
+    destination: "~/Downloads/Archives"
+
+  # ── Code & scripts ───────────────────────────────────────────
+  - name: "Code"
+    extensions: [".py", ".js", ".ts", ".html", ".css", ".json", ".yml",
+                 ".yaml", ".sh", ".bat", ".ps1", ".cpp", ".c", ".h",
+                 ".java", ".go", ".rs", ".rb", ".php"]
+    destination: "~/Documents/Code"
+
+  # ── Executables & installers ──────────────────────────────────
+  - name: "Installers"
+    extensions: [".exe", ".msi", ".dmg", ".pkg", ".deb", ".rpm", ".appimage"]
+    destination: "~/Downloads/Installers"
+
+  # ── Disk images ───────────────────────────────────────────────
+  - name: "Disk Images"
+    extensions: [".iso", ".img", ".vmdk", ".vhd"]
+    destination: "~/Downloads/DiskImages"
+
+  # ── Fonts ─────────────────────────────────────────────────────
+  - name: "Fonts"
+    extensions: [".ttf", ".otf", ".woff", ".woff2"]
+    destination: "~/Documents/Fonts"
+
+  # ── Screenshots (name pattern) ────────────────────────────────
+  - name: "Screenshots"
+    name_regex: "^(screenshot|screen.shot|scr_|capture).*\\.(png|jpg)$"
+    destination: "~/Pictures/Screenshots"
+
+  # ── Large files (>500 MB) — example of size rule ──────────────
+  - name: "Large Files"
+    min_size_kb: 512000
+    destination: "~/Downloads/LargeFiles"
